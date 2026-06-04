@@ -1,0 +1,6 @@
+venv/
+dataset/
+catboost_info/
+submission.csv
+__pycache__/
+*.pyc
