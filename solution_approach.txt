@@ -8,9 +8,11 @@ ________________________________________________________________________________
 The methodology follows a structured machine learning pipeline:
 	Data Loading & EDA: Reading train/test datasets and analyzing basic statistics, distributions, and null values.
 	Feature Engineering: Extracting complex spatial, temporal, and interaction features from raw data to give models more predictive power.
-	Model Training & Cross-Validation: Using a 5-fold cross-validation strategy to train the models and prevent overfitting. This generates Out-Of-Fold (OOF) predictions 						   for evaluation.
-	Hyperparameter Tuning: Utilizing Optuna to automatically search for the most optimal hyperparameters for the LightGBM model, maximizing the R² score.
-	Ensemble Strategy: A weighted blending of predictions from LightGBM, XGBoost, and CatBoost. The weights are optimized using a grid search over the OOF predictions to 				   find the combination that maximizes the R² score.
+	Model Training & Validation (Two-Stage Pipeline): 
+	    Stage 1 (Validation): Using a strict 80/20 Time-Based Holdout to provide a realistic local validation score without future leakage. Target aggregations are computed using a strict 5-Fold Out-Of-Fold (OOF) method on the training data to completely eliminate target leakage.
+	    Stage 2 (Final Retraining): After local validation, the models are retrained on 100% of the training data to ensure they learn from the most recent trends right before the test cutoff.
+	Hyperparameter Tuning: Models use finely tuned hyperparameters optimized for deeper, structured trees, balancing complexity with robust OOF aggregation features.
+	Ensemble Strategy: A weighted blending of predictions from LightGBM, XGBoost, and CatBoost.
 	Post-processing: The final blended predictions are clipped to fall within the observed min/max range of the training targets to prevent anomalous extreme predictions.
 
 ________________________________________________________________________________________________________________________________________________________________________________
